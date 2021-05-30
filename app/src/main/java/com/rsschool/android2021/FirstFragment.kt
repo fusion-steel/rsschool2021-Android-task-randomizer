@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 
-class FirstFragment : Fragment() {
+class FirstFragment : Fragment(), LaunchSecondFragment {
 
     private var generateButton: Button? = null
     private var previousResult: TextView? = null
@@ -27,13 +29,20 @@ class FirstFragment : Fragment() {
         generateButton = view.findViewById(R.id.generate)
 
         val result = arguments?.getInt(PREVIOUS_RESULT_KEY)
-        previousResult?.text = "Previous result: ${result.toString()}"
+        previousResult?.text = "Previous result: ${ result.toString() }"
 
-        // TODO: val min = ...
-        // TODO: val max = ...
+        var min = 0
+        view.findViewById<EditText>(R.id.min_value).addTextChangedListener {
+            min = it?.toString()?.toIntOrNull() ?: 0
+        }
+
+        var max = 0
+        view.findViewById<EditText>(R.id.max_value).addTextChangedListener {
+            max = it?.toString()?.toIntOrNull() ?: 0
+        }
 
         generateButton?.setOnClickListener {
-            // TODO: send min and max to the SecondFragment
+            openSecondFragment(min, max)
         }
     }
 
@@ -50,4 +59,7 @@ class FirstFragment : Fragment() {
 
         private const val PREVIOUS_RESULT_KEY = "PREVIOUS_RESULT"
     }
+
+    override fun openSecondFragment(min: Int, max: Int) =
+        (activity as MainActivity).openSecondFragment(min, max)
 }
